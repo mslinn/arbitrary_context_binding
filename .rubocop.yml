@@ -33,6 +33,9 @@ Metrics/BlockLength:
     - arbitrary_context_binding.gemspec
   Max: 30
 
+Metrics/ClassLength:
+  Max: 150
+
 Metrics/CyclomaticComplexity:
   Max: 15
 

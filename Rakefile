@@ -7,27 +7,25 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/**/*_test.rb']
 end
 
-desc 'Bump patch version'
+desc 'Bump patch'
 task :patch do
   system 'gem bump --tag'
 end
 
-desc 'Bump minor version'
+desc 'Bump minor'
 task :minor do
   system 'gem bump --version minor --tag'
 end
 
-desc 'Bump major version'
+desc 'Bump major'
 task :major do
   system 'gem bump --version major --tag'
 end
 
 task publish: [:build] do
   $VERBOSE = nil
-  load 'arbitrary_context_binding/version.rb'
-  
-  system "gem push pkg/arbitrary_context_binding-#{ArbitraryContextBinding::VERSION}.gem"
-  
+  load 'nugem/version.rb'
+  system "gem push pkg/nugem-#{Nugem::VERSION}.gem"
 end
 
 desc 'Bump patch version, create git tag, build the gem and release to geminabox (default)'
