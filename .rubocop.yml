@@ -58,6 +58,15 @@ Style/FrozenStringLiteralComment:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
 
+RSpec/ScatteredLet:
+  Enabled: false
+
+RSpec/IndexedLet:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 RSpec/SpecFilePathFormat:
   IgnoreMethods: true
 
