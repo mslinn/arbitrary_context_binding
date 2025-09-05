@@ -14,7 +14,7 @@ module OtherHelpers
   def self.helper = 'other helper'
 end
 
-module Ex1
+module DefineStuff
   include ArbitraryContextBinding
 
   repository_class = Struct.new(:user_name)
