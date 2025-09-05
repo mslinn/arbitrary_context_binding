@@ -17,14 +17,17 @@ class AmbiguousMethodError < StandardError; end
 #  - Module and class methods: <%= Project.version %>
 #  - Delegated module methods: <%= version %>
 #
+# ERB trim mode is set to '-'. See https://www.rubydoc.info/stdlib/erb/ERB#initialize-instance_method
+#
 # Unlike an approach that uses method_missing, this delegation approach invokes real methods created with
 # define_singleton_method. This means the methods can be used with respond_to? and the code runs much faster.
 #
-# Note that ambiguous methods return true in response to respond_to?, but raise NameError when invoked.
+# Ambiguous method references return true in response to respond_to?, but raise NameError when invoked.
 #
 # @example
 # acb = ArbitraryContextBinding.new(objects: [obj1, obj2])
 # expanded_template = acb.render template
+#
 module ArbitraryContextBinding
   class ArbitraryContextBinding
     attr_reader :base_binding, :modules, :objects
@@ -36,8 +39,9 @@ module ArbitraryContextBinding
     #                         (so you can call obj.method, etc.).
     # @param modules [Array]: are copied into the ERB (so you can call Project.version, etc.).
     def initialize(base_binding: binding, objects: [], modules: [])
-      raise ArgumentError, 'objects must be an array' unless objects.is_a? Array
-      raise ArgumentError, 'modules must be an array' unless modules.is_a? Array
+      raise ArgumentError, 'base_binding must be a Binding' unless base_binding.is_a? Binding
+      raise ArgumentError, 'objects must be an Array' unless objects.is_a? Array
+      raise ArgumentError, 'modules must be an Array' unless modules.is_a? Array
 
       @objects = objects.dup
       @modules = modules.dup
@@ -47,7 +51,7 @@ module ArbitraryContextBinding
     end
 
     # @return the caller’s binding so pre-existing instance variables are available
-    def get_binding = @base_binding
+    def the_binding = @base_binding
 
     # Render an ERB template string in the fully constructed context.
     # @param template [String] The ERB template to render.
@@ -59,7 +63,7 @@ module ArbitraryContextBinding
       #  - only a single newline is removed
       erb = ERB.new template, trim_mode: '-'
       ctx = ArbitraryContextBinding.new(base_binding: @base_binding, modules: @modules, objects: @objects)
-      erb.result ctx.get_binding
+      erb.result ctx.the_binding
     end
 
     def to_s
@@ -103,15 +107,12 @@ module ArbitraryContextBinding
         mod.methods(false).each { |m| method_map[m] << mod }
       end
 
-      # Define delegators and ensure only one method per name is defined
+      # Copy delegators into this instance and ensure only one method per name is defined
       method_map.each do |method_name, responders|
         case responders.size
         when 0 # This should not be possible
           # Do nothing because respond_to? will return false and a NameError will be raised if invoked as usual
         when 1 # Happy path: exactly one responder
-          # define_singleton_method(method_name) do |*args, &block|
-          #   responders.first.public_send(method_name, *args, &block)
-          # end
           target = responders.first
           define_singleton_method(method_name) do |*args, &block|
             target.public_send(method_name, *args, &block)
@@ -126,7 +127,7 @@ module ArbitraryContextBinding
       end
     end
 
-    # Copy constants from modules and classes into the ERB
+    # Copy constants from modules and classes into this instance
     def define_module_constants!
       @modules.each do |mod|
         unless mod.is_a?(Module)
