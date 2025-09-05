@@ -1,6 +1,6 @@
 require_relative 'define_stuff'
 
-module Usage1
+module GoodExample
   include DefineStuff
 
   template = 'User: <%= @repository.user_name %>, Project: <%= @project.title %>'
