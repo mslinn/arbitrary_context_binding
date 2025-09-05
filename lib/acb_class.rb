@@ -20,7 +20,7 @@ class AmbiguousMethodError < StandardError; end
 # ERB trim mode is set to '-'.
 # See https://www.rubydoc.info/stdlib/erb/ERB#initialize-instance_method
 #
-# Unlike an approach that uses method_missing, the delegation approach used invokes real singleton methods
+# Unlike an approach that would use method_missing, the delegation approach used invokes real singleton methods
 # created with define_singleton_method. This means the methods can be used with respond_to?
 # and the code runs much faster.
 #
