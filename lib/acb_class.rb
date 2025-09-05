@@ -36,10 +36,10 @@ module ArbitraryContextBinding
 
     # @param base_binding: is the binding to use as the base for this context binding.
     #                      This is typically the caller's binding so that instance variables
-    #                      defined in the caller are visible inside ERB templates.
+    #                      defined in the calling scope are accessible from ERB templates.
     # @param objects [Array]: are the objects whose public methods are copied into the ERB
-    #                         (so you can call obj.method, etc.).
-    # @param modules [Array]: are copied into the ERB (so you can call Project.version, etc.).
+    #                         (so you can write ERB templates like <%= obj.method %>).
+    # @param modules [Array]: are copied into the ERB (so you can write ERB templates like <%= Project.version %>).
     def initialize(base_binding: binding, objects: [], modules: [])
       raise ArgumentError, 'base_binding must be a Binding' unless base_binding.is_a? Binding
       raise ArgumentError, 'objects must be an Array' unless objects.is_a? Array
