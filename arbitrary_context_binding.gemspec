@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   END_DESC
   spec.email                 = ['mslinn@mslinn.com']
   spec.files                 = Dir['.rubocop.yml', 'LICENSE.*', 'Rakefile', '{lib,spec}/**/*', '*.gemspec', '*.md']
-  spec.homepage              = 'https://github.com/Mike Slinn/arbitrary_context_binding'
+  spec.homepage              = host
   spec.license               = 'MIT'
   spec.metadata = {
     'allowed_push_host' => 'https://rubygems.org',

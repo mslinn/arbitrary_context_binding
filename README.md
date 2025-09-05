@@ -77,7 +77,7 @@ $ bundle exec rake release
 
 ## Contributing
 
-Bug reports and pull requests are welcome at https://github.com/Mike Slinn/arbitrary_context_binding.
+Bug reports and pull requests are welcome at https://github.com/mslinn/arbitrary_context_binding.
 
 
 ## License
