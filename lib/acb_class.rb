@@ -66,7 +66,7 @@ module ArbitraryContextBinding
       erb.result ctx.the_binding
     end
 
-    def to_s
+    def to_string
       msg = 'ArbitraryContextBinding'
       msg += " #{@base_binding.local_variables.length} objects" if @base_binding.local_variables.any?
       msg += " #{@base_binding.instance_variables.length} objects" if @base_binding.instance_variables.any?
@@ -75,7 +75,10 @@ module ArbitraryContextBinding
       msg
     end
 
-    def inspect = to_s
+    # Order is important:
+    alias inspect_original inspect
+    alias inspect to_string
+    alias to_s to_string
 
     private
 
