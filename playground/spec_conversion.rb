@@ -1,3 +1,5 @@
+# This code has not be massaged into usage examples yet
+
 puts '=== Using pre-existing instance variables ==='
 template = 'User: <%= @repository.user_name %>, Project: <%= @project.title %>'
 result = acb_all.render(template)
