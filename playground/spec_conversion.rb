@@ -50,14 +50,6 @@ rescue AmbiguousMethodError => e
   puts e.message.include?("Ambiguous method 'foo'")
 end
 
-begin
-  obj = Struct.new(:helper).new('object helper')
-  template = '<%= helper %>'
-  acb_dup_method.render(template)
-rescue AmbiguousMethodError => e
-  puts e.message.include?("Ambiguous method 'helper'")
-end
-
 puts '=== With respond_to? ==='
 puts acb12.respond_to?(:foo) == true
 puts acb12.respond_to?(:bar) == true

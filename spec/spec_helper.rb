@@ -19,3 +19,6 @@ RSpec.configure do |config|
   # See https://www.rubydoc.info/github/rspec/rspec-core/RSpec%2FCore%2FConfiguration:pending_failure_output
   config.pending_failure_output = :skip
 end
+
+# Load additional support files
+Dir[File.join(__dir__, 'support/**/*.rb')].each { |f| require f }
