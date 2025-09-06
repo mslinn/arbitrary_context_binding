@@ -30,6 +30,8 @@ class AmbiguousMethodError < StandardError; end
 # @example
 # acb = ArbitraryContextBinding.new(objects: [obj1, obj2])
 # expanded_template = acb.render template
+# acb.provider_for(:method_name)  # => #<struct foo="obj1">
+# acb.provider_for(:@repository)  # => :base_binding
 module ArbitraryContextBinding
   class ArbitraryContextBinding
     attr_reader :base_binding, :modules, :objects
@@ -40,20 +42,32 @@ module ArbitraryContextBinding
     # @param objects [Array]: are the objects whose public methods are copied into the ERB
     #                         (so you can write ERB templates like <%= obj.method %>).
     # @param modules [Array]: are copied into the ERB (so you can write ERB templates like <%= Project.version %>).
-    def initialize(base_binding: binding, objects: [], modules: [])
+    def initialize(base_binding: binding, modules: [], objects: [])
       raise ArgumentError, 'base_binding must be a Binding' unless base_binding.is_a? Binding
-      raise ArgumentError, 'objects must be an Array' unless objects.is_a? Array
       raise ArgumentError, 'modules must be an Array' unless modules.is_a? Array
+      raise ArgumentError, 'objects must be an Array' unless objects.is_a? Array
 
-      @objects = objects.dup # shallow copy
-      @modules = modules.dup # shallow copy
       @base_binding = base_binding
+      @modules      = modules.dup # shallow copy
+      @objects      = objects.dup # shallow copy
+      @provider_map = {}          # name (method or instance variable) => provider (object, module, or :base_binding)
       define_module_constants!
       define_delegators!
+      define_instance_variable_providers!
     end
 
-    # @return the caller’s binding so pre-existing instance variables are available
-    def the_binding = @base_binding
+    # Assumes ambiguous methods were previously detected
+    def provider_for(method_name)
+      @provider_map[method_name.to_sym]
+    end
+
+    def providers_for(name)
+      if name.to_s.start_with?('@')
+        @provider_map.key?(name.to_sym) ? [:base_binding] : []
+      else
+        (@objects + @modules).select { |prov| prov.respond_to?(name) }
+      end
+    end
 
     # Render an ERB template string in the fully constructed context.
     # @param template [String] The ERB template to render.
@@ -67,6 +81,9 @@ module ArbitraryContextBinding
       acb = ArbitraryContextBinding.new(base_binding: @base_binding, modules: @modules, objects: @objects)
       erb.result acb.the_binding
     end
+
+    # @return the caller’s binding so pre-existing instance variables are available
+    def the_binding = @base_binding
 
     def to_string
       msg = 'ArbitraryContextBinding'
@@ -122,6 +139,7 @@ module ArbitraryContextBinding
           # Do nothing because respond_to? will return false and a NameError will be raised if invoked as usual
         when 1 # Happy path: exactly one responder
           target = responders.first
+          @provider_map[method_name.to_sym] = target
           define_singleton_method(method_name) do |*args, &block| # add this method as method_name to self
             target.public_send(method_name, *args, &block)
           end
@@ -131,7 +149,15 @@ module ArbitraryContextBinding
           define_singleton_method(method_name) do |*| # add this method as method_name to self
             raise AmbiguousMethodError, error_message
           end
+          @provider_map[method_name] = responders # Preserve ambiguous providers for method_name
         end
+      end
+    end
+
+    def define_instance_variable_providers!
+      # ivar is a symbol like :@repository
+      @base_binding.eval('instance_variables').each do |ivar|
+        @provider_map[ivar] = :base_binding
       end
     end
 
