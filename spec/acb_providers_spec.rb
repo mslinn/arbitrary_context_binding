@@ -46,8 +46,11 @@ module ArbitraryContextBinding
           expect(acb_all.providers_for(:@repository)).to eq([:base_binding])
         end
 
-        it 'returns nil and [] for an unknown method' do
-          expect(acb12.provider_for(:baz)).to eq([])
+        it 'returns raises for an unknown method' do
+          expect { acb12.provider_for(:baz) }.to raise_error(NameError, /baz is undefined/)
+        end
+
+        it 'returns [] for an unknown method' do
           expect(acb12.providers_for(:baz)).to eq([])
         end
       end
