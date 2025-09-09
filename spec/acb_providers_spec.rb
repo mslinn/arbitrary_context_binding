@@ -3,6 +3,14 @@ require 'erb'
 require_relative 'spec_helper'
 
 module ArbitraryContextBinding
+  # ArbitraryContextBinding.provider_map value has this value: {
+  #   :foo=>#<struct  foo="foo from obj1">, :foo==>#<struct  foo="foo from obj1">,
+  #   :bar==>#<struct  bar="bar from obj2">, :bar=>#<struct  bar="bar from obj2">,
+  #   :helper=>TestHelpers, :helper = TestHelpers, :greet = TestHelpers,
+  #   :with_block = TestHelpers, :version = TestHelpers,
+  #   :@__inspect_output = :base_binding, :@__memoized = :base_binding,
+  #   :@repository = :base_binding, :@project = :base_binding
+  # }
   class ArbitraryContextBindingTest
     RSpec.describe ArbitraryContextBinding do
       include_context 'with arbitrary context binding setup'
@@ -18,9 +26,9 @@ module ArbitraryContextBinding
           expect(acb12.providers_for(:bar)).to eq([obj2])
         end
 
-        it 'returns all providers for an ambiguous method' do
+        it 'raises AmbiguousMethodError for an ambiguous method defined in an array of objects' do
           expect(acb13.providers_for(:foo)).to contain_exactly(obj1, obj3)
-          expect(acb13.provider_for(:foo)).to contain_exactly(obj1, obj3)
+          expect { acb13.provider_for(:foo) }.to raise_error(AmbiguousMethodError, /Ambiguous method 'foo'/)
         end
 
         it 'returns the correct provider for a module method' do
@@ -28,9 +36,9 @@ module ArbitraryContextBinding
           expect(acb_module.providers_for(:version)).to eq([TestHelpers])
         end
 
-        it 'returns all providers for an ambiguous module method' do
+        it 'raises AmbiguousMethodError for an ambiguous method defined in an array of modules' do
           expect(acb_modules.providers_for(:helper)).to contain_exactly(OtherHelpers, TestHelpers)
-          expect(acb_modules.provider_for(:helper)).to contain_exactly(OtherHelpers, TestHelpers)
+          expect { acb_modules.provider_for(:helper) }.to raise_error(AmbiguousMethodError, /Ambiguous method 'helper'/)
         end
 
         it 'returns :base_binding for pre-existing instance variables' do
@@ -39,7 +47,7 @@ module ArbitraryContextBinding
         end
 
         it 'returns nil and [] for an unknown method' do
-          expect(acb12.provider_for(:baz)).to be_nil
+          expect(acb12.provider_for(:baz)).to eq([])
           expect(acb12.providers_for(:baz)).to eq([])
         end
       end

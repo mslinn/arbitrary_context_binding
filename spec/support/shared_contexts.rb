@@ -22,7 +22,7 @@ module ArbitraryContextBinding
       let(:project_class)    { Struct.new(:title) }
       let(:repository)  { repository_class.new('alice') }
       let(:project)     { project_class.new('cool app') }
-      let(:acb_objects) { ArbitraryContextBinding.new(objects: [repository, project]) }
+      let(:acb_objects) { ArbitraryContextBinding.new(objects: [project, repository]) }
 
       let(:obj1) { Struct.new(:foo).new('foo from obj1') }
       let(:obj2) { Struct.new(:bar).new('bar from obj2') }
@@ -35,7 +35,7 @@ module ArbitraryContextBinding
 
       let(:acb_all) do
         ArbitraryContextBinding.new(
-          objects:      [obj1, obj2], # Do not include obj3 because foo would be ambiguous
+          objects:      [obj1, obj2, project, repository], # Do not include obj3 because foo would be ambiguous
           modules:      [TestHelpers],
           base_binding: binding
         )

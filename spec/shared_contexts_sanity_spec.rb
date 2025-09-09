@@ -1,6 +1,15 @@
 require_relative 'spec_helper'
 
 module ArbitraryContextBinding
+  # ArbitraryContextBinding.provider_map value has this value: {
+  #   :foo=>#<struct  foo="foo from obj1">, :foo==>#<struct  foo="foo from obj1">,
+  #   :bar==>#<struct  bar="bar from obj2">, :bar=>#<struct  bar="bar from obj2">,
+  #   :helper=>TestHelpers, :helper = TestHelpers, :greet = TestHelpers,
+  #   :with_block = TestHelpers, :version = TestHelpers,
+  #   :@__inspect_output = :base_binding, :@__memoized = :base_binding,
+  #   :@repository = :base_binding, :@project = :base_binding
+  # }
+
   RSpec.describe 'Shared context setup' do
     include_context 'with arbitrary context binding setup'
 
