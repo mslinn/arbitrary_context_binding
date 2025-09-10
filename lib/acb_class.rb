@@ -53,6 +53,9 @@ module ArbitraryContextBinding
       @base_binding = base_binding
       @modules      = modules # .dup # shallow copy
       @objects      = objects # .dup # shallow copy
+
+      # TODO make a shallow copy of base_binding and add modules and objects to it without affecting original binding
+      @objects.each { |x| x.public_methods }
     end
 
     # Raises an exception if name is ambiguous
@@ -65,10 +68,12 @@ module ArbitraryContextBinding
       result.first
     end
 
+    # Look up where name is defined
+    # @param name [String, Symbol]
     # @return [:base_binding] if name is only defined there, or an array of providers, or [] if no definition found
     # Does not raise an exception if name is ambiguous
     def providers_for(name)
-      result = (@objects + @modules).select { |provider| provider.respond_to?(name) }
+      result = (@objects + @modules).select { |provider| defined_in_object?(provider, name.to_s, name.to_sym) }
       result << :base_binding if symbol_defined_in_binding?(name)
       result
     end
@@ -80,19 +85,34 @@ module ArbitraryContextBinding
       symbol = name.to_sym
       return true if !name.to_s.start_with?('@') && @base_binding.local_variable_defined?(symbol)
 
-      receiver = @base_binding.receiver # the object the current code is executing on (e.g., main or an instance).
-      return true if receiver.respond_to?(symbol) # Check for a method definition
+      object = @base_binding.receiver # the object the current code is executing on (e.g., main or an instance).
+      defined_in_object? object, name, symbol
+    end
 
-      return true if name.start_with?('@') && receiver.instance_variable_defined?(symbol)
-
+    def defined_in_object?(object, name, symbol)
+      puts "      Examining #{object.inspect} for definition of #{name}"
+      if object.respond_to?(symbol)
+        puts "        Found method definition for #{name} in #{object.inspect}"
+        return true
+      end
+      if name.start_with?('@') && object.instance_variable_defined?(symbol)
+        puts "        Found instance variable definition for #{name} in #{object.inspect}"
+        return true
+      end
       # Cannot directly use `class_variable_defined?` on the receiver unless it's a class.
-      # A more general approach is to check if the receiver's class has the class variable.
-      return true if name.start_with?('@@') && receiver.class.class_variable_defined?(symbol)
+      # A more general approach is to check if the object's class has the class variable.
+      if name.start_with?('@@') && object.class.class_variable_defined?(symbol)
+        puts "        Found class variable definition for #{name} in #{object.inspect}"
+        return true
+      end
 
       begin
-        return true if receiver.class.const_defined?(symbol)
+        if object.class.const_defined?(symbol)
+          puts "        Found constant definition for #{name} in #{object.inspect}"
+          return true
+        end
       rescue NameError
-        # The symbol is not a valid constant name, so we do nothing.
+        # The symbol is not a valid constant name, so do nothing.
       end
 
       false
@@ -125,7 +145,7 @@ module ArbitraryContextBinding
 
     # Order is important:
     alias inspect_original inspect # Call this if you need to
-    alias inspect to_string
     alias to_s to_string
+    def inspect = "#<#{to_string}>"
   end
 end
