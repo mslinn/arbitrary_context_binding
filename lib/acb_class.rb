@@ -12,7 +12,7 @@ class AmbiguousMethodError < StandardError; end
 # Modules and classes can also contribute methods to delegation resolution.
 #
 # The internally constructed ERB provided by ArbitraryContextBinding#render can use:
-#  - Instance vars: <%= @repository.user_name %>
+#  - Instance vars: <%= @blah.user_name %>
 #  - Delegated instance methods: <%= user_name %>
 #  - Module and class methods: <%= Project.version %>
 #  - Delegated module methods: <%= version %>
@@ -31,7 +31,7 @@ class AmbiguousMethodError < StandardError; end
 # acb = ArbitraryContextBinding.new(objects: [obj1, obj2])
 # expanded_template = acb.render template
 # acb.provider_for(:method_name)  # => #<struct foo="obj1">
-# acb.provider_for(:@repository)  # => :base_binding
+# acb.provider_for(:@blah)  # => :base_binding
 module ArbitraryContextBinding
   class ArbitraryContextBinding
     attr_reader :base_binding, :modules, :objects
@@ -53,9 +53,6 @@ module ArbitraryContextBinding
       @base_binding = base_binding
       @modules      = modules # .dup # shallow copy
       @objects      = objects # .dup # shallow copy
-
-      # TODO make a shallow copy of base_binding and add modules and objects to it without affecting original binding
-      @objects.each { |x| x.public_methods }
     end
 
     # Raises an exception if name is ambiguous
@@ -80,9 +77,15 @@ module ArbitraryContextBinding
 
     # Check a symbol for all possible definitions within the current binding, including local variables,
     # instance variables, class variables, constants, and methods.
-    def symbol_defined_in_binding?(name)
-      name = name.to_s if name.instance_of? Symbol
-      symbol = name.to_sym
+    def symbol_defined_in_binding?(name_or_symbol)
+      name, symbol = case name_or_symbol
+                     when String
+                       [name_or_symbol, name_or_symbol.to_sym]
+                     when Symbol
+                       [name_or_symbol.to_s, name_or_symbol]
+                     else
+                       puts "#{name_or_symbol} has an unexpected type: #{name_or_symbol.class.name}"
+                     end
       return true if !name.to_s.start_with?('@') && @base_binding.local_variable_defined?(symbol)
 
       object = @base_binding.receiver # the object the current code is executing on (e.g., main or an instance).
@@ -90,6 +93,8 @@ module ArbitraryContextBinding
     end
 
     def defined_in_object?(object, name, symbol)
+      return false if top_level_module_of(object) == 'RSpec' # Debugging tools are supposed to make things easier
+
       puts "      Examining #{object.inspect} for definition of #{name}"
       if object.respond_to?(symbol)
         puts "        Found method definition for #{name} in #{object.inspect}"
@@ -141,6 +146,10 @@ module ArbitraryContextBinding
       msg += " #{@objects.length} objects" if @objects.any?
       msg += " #{@modules.length} objects" if @modules.any?
       msg
+    end
+
+    def top_level_module_of(object)
+      object.class.to_s.split('::').first
     end
 
     # Order is important:

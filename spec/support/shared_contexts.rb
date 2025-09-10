@@ -14,37 +14,31 @@ module OtherHelpers
 end
 
 module ArbitraryContextBinding
-  class ArbitraryContextBindingTest
-    RSpec.shared_context 'with arbitrary context binding setup' do
-      let(:acb) { ArbitraryContextBinding.new }
+  # The contents the binding are a snapshot of the calling scope
+  # RSpec's crazy shenanegans around how let works mean that let declarations are not present in the binding as instance variables
+  # So regular instance variable declarations within a Module are used instead of let within a Class
+  Repository = Struct.new(:user_name)
+  Project = Struct.new(:title)
 
-      let(:repository_class) { Struct.new(:user_name) }
-      let(:project_class)    { Struct.new(:title) }
-      let(:repository)  { repository_class.new('alice') }
-      let(:project)     { project_class.new('cool app') }
-      let(:acb_objects) { ArbitraryContextBinding.new(objects: [project, repository]) }
+  @acb = ArbitraryContextBinding.new
 
-      let(:obj1) { Struct.new(:foo).new('foo from obj1') }
-      let(:obj2) { Struct.new(:bar).new('bar from obj2') }
-      let(:obj3) { Struct.new(:foo).new('foo from obj3') }
-      let(:acb12) { ArbitraryContextBinding.new(objects: [obj1, obj2]) }
-      let(:acb13) { ArbitraryContextBinding.new(objects: [obj1, obj3]) }
+  @repository = Repository.new 'alice'
+  @project = Project.new 'cool app'
+  @acb_objects = ArbitraryContextBinding.new(objects: [@project, @repository])
 
-      let(:acb_module) { ArbitraryContextBinding.new(modules: [TestHelpers]) }
-      let(:acb_modules) { ArbitraryContextBinding.new(modules: [OtherHelpers, TestHelpers]) }
+  @obj1 = Struct.new(:foo).new('foo from obj1')
+  @obj2 = Struct.new(:bar).new('bar from obj2')
+  @obj3 = Struct.new(:foo).new('foo from obj3')
+  @acb12 = ArbitraryContextBinding.new(objects: [@obj1, @obj2])
+  @acb13 = ArbitraryContextBinding.new(objects: [@obj1, @obj3])
 
-      let(:acb_all) do
-        ArbitraryContextBinding.new(
-          objects:      [obj1, obj2, project, repository], # Do not include obj3 because foo would be ambiguous
-          modules:      [TestHelpers],
-          base_binding: binding
-        )
-      end
+  @acb_module = ArbitraryContextBinding.new(modules: [TestHelpers])
+  @acb_modules = ArbitraryContextBinding.new(modules: [OtherHelpers, TestHelpers])
 
-      before do # define pre-existing instance variables in the test scope
-        @repository = repository
-        @project    = project
-      end
-    end
-  end
+  # Do not include obj3 because foo would be ambiguous
+  @acb_all = ArbitraryContextBinding.new(
+    objects:      [@obj1, @obj2, @project, @repository],
+    modules:      [TestHelpers],
+    base_binding: binding
+  )
 end
