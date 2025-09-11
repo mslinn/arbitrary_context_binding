@@ -92,6 +92,11 @@ module ArbitraryContextBinding
       defined_in_object? object, name, symbol
     end
 
+    # Indicate if a name/symbol is defined in the given object
+    # @param object [Object] object to search
+    # @param name [String] Name of method or variable to search for
+    # @param symbol [Symbol] Symbol version of name
+    # @return [Boolean] true iff name/symbol was found in the given object
     def defined_in_object?(object, name, symbol)
       return false if top_level_module_of(object) == 'RSpec' # Debugging tools are supposed to make things easier
 
