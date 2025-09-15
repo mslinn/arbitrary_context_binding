@@ -79,8 +79,8 @@ def nugem_test
   puts '  @test_bar.tell_me_a_story         = ' + custom_binding.eval('@test_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
   puts '  @another_test_bar.tell_me_a_story = ' + custom_binding.eval('@another_test_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
   puts
-  puts '  local_bar.bar = '             + custom_binding.eval('local_bar.bar') # => "value of bar.bar"
-  puts '  @test_bar.bar = '             + custom_binding.eval('@test_bar.bar') # => "value of bar.bar"
+  puts '  local_bar.bar         = '     + custom_binding.eval('local_bar.bar') # => "value of bar.bar"
+  puts '  @test_bar.bar         = '     + custom_binding.eval('@test_bar.bar') # => "value of bar.bar"
   puts '  @another_test_bar.bar = '     + custom_binding.eval('@another_test_bar.bar') # => "value of another_bar.bar"
   puts
 end
