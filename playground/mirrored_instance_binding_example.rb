@@ -1,4 +1,4 @@
-require_relative '../lib/binding'
+require_relative '../lib/custom_binding'
 
 # Example: Mirrored instance variable between bindings
 
@@ -23,7 +23,7 @@ obj = MyClass.new
 original_binding = obj.instance_eval { binding } # this is how to get the binding for any object
 
 # Create a new binding for the same object
-new_binding = CustomBinding.mirrored_instance_binding(original_binding)
+new_binding = CustomBinding.mirror_binding(original_binding)
 # Both original_binding and new_binding are for the same object (obj).
 # Any changes to @foo via either binding are reflected in the other,
 # because they reference the same object’s instance variable.

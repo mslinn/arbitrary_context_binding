@@ -4,8 +4,6 @@ require_relative 'spec_helper'
 
 module ArbitraryContextBindingTest
   RSpec.describe ArbitraryContextBinding do
-    # include_context 'with arbitrary context binding setup'
-
     describe 'using pre-existing instance variables' do
       it 'renders instance variable values from caller scope' do
         template = 'User: <%= @repository.user_name %>, Project: <%= @project.title %>'

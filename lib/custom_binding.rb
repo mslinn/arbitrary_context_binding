@@ -31,21 +31,17 @@ module CustomBinding
     end
   end
 
-  # Return a new binding for the same receiver as the source binding.
-  # Changes to instance variables via either binding are reflected in both.
-  # @param source_binding [Binding] the original binding
-  # @return [Binding] a new binding for the same object
-  def self.mirrored_instance_binding(source_binding)
-    source_binding.receiver.instance_eval { binding }
-  end
-
   # Create a new binding that reflects all instance variables and methods of the given source_binding.
+  # Changes to instance variables via either binding are reflected in both.
   # Class variables can be accessed via the class/module of the receiver.
   # Global variables are always accessible via $ prefix, regardless of binding.
   # Changes to either binding will be visible in both bindings.
   # Note that local variables are not shared between bindings in Ruby.
+  #
+  # @param source_binding [Binding] the original binding
+  # @return [Binding] a new binding for the same receiver as the source binding.
   def self.mirror_binding(source_binding)
-    mirrored_instance_binding(source_binding)
+    source_binding.receiver.instance_eval { binding }
   end
 
   # Copy all class variables from the source binding's receiver's class/module to the target class/module.
