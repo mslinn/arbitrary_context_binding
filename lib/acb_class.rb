@@ -139,6 +139,9 @@ module ArbitraryContextBinding
       erb = ERB.new template, trim_mode: '-'
       acb = ArbitraryContextBinding.new(base_binding: @base_binding, modules: @modules, objects: @objects)
       erb.result acb.the_binding
+    rescue NameError => e
+      puts e.message
+      ''
     end
 
     # @return the caller’s binding so pre-existing instance variables are available

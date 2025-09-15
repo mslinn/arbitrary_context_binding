@@ -15,7 +15,7 @@ module OtherHelpers
 end
 
 module DefineStuff
-  include ArbitraryContextBinding
+  # include ArbitraryContextBinding
 
   repository_class = Struct.new(:user_name)
   project_class    = Struct.new(:title)

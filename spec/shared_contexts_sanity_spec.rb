@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-module ArbitraryContextBinding
+module ArbitraryContextBindingTest
   # ArbitraryContextBinding.provider_map value has this value: {
   #   :foo=>#<struct  foo="foo from obj1">, :foo==>#<struct  foo="foo from obj1">,
   #   :bar==>#<struct  bar="bar from obj2">, :bar=>#<struct  bar="bar from obj2">,
@@ -11,7 +11,7 @@ module ArbitraryContextBinding
   # }
 
   RSpec.describe 'Shared context setup' do
-    include_context 'with arbitrary context binding setup'
+    # include_context 'with arbitrary context binding setup'
 
     it 'defines repository and project' do
       expect(repository.user_name).to eq('alice')
