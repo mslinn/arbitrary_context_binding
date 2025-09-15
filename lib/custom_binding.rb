@@ -1,4 +1,44 @@
 module CustomBinding
+  def self.add_object_to_binding_as(new_name, new_object, the_binding)
+    the_binding.eval "#{new_name} = ObjectSpace._id2ref(#{new_object.object_id})"
+  end
+
+  # Copy all class variables from the source binding's receiver's class/module to the target class/module.
+  # @param source_binding [Binding] the binding whose receiver's class/module to copy from
+  # @param target_class [Class, Module] the class/module to copy class variables to
+  def self.copy_class_variables(source_binding, target_class)
+    source_klass = source_binding.receiver.class
+    source_klass.class_variables.each do |var|
+      value = source_klass.class_variable_get(var)
+      target_class.class_variable_set(var, value) # rubocop:disable Style/ClassVars
+    end
+  end
+
+  # Copy all constants from the source binding's receiver's class/module to the target class/module.
+  # @param source_binding [Binding] the binding whose receiver's class/module to copy from
+  # @param target_class [Class, Module] the class/module to copy constants to
+  def self.copy_constants(source_binding, target_class)
+    source_klass = source_binding.receiver.class
+    source_klass.constants(false).each do |const|
+      value = source_klass.const_get(const)
+      target_class.const_set(const, value) unless target_class.const_defined?(const, false)
+    end
+  end
+
+  # Copy specified local variables from a source binding to a new binding.
+  # @param symbols [Array<Symbol>] the local variable names to transfer
+  # @param source_binding [Binding] the binding to look up the variables in
+  # @return [Binding] a new binding with the specified local variables set
+  # @raise [NameError] if a symbol is not defined in the source binding
+  def self.copy_local_variables(symbols, source_binding)
+    new_binding = binding
+    symbols.each do |sym|
+      value = source_binding.local_variable_get(sym)
+      new_binding.local_variable_set(sym, value)
+    end
+    new_binding
+  end
+
   # Copy a variable (local, instance, class, or global) to a binding.
   #
   # The value provided by the binding after using this method will not automatically reflect subsequent changes in the
@@ -42,41 +82,5 @@ module CustomBinding
   # @return [Binding] a new binding for the same receiver as the source binding.
   def self.mirror_binding(source_binding)
     source_binding.receiver.instance_eval { binding }
-  end
-
-  # Copy all class variables from the source binding's receiver's class/module to the target class/module.
-  # @param source_binding [Binding] the binding whose receiver's class/module to copy from
-  # @param target_class [Class, Module] the class/module to copy class variables to
-  def self.copy_class_variables(source_binding, target_class)
-    source_klass = source_binding.receiver.class
-    source_klass.class_variables.each do |var|
-      value = source_klass.class_variable_get(var)
-      target_class.class_variable_set(var, value) # rubocop:disable Style/ClassVars
-    end
-  end
-
-  # Copy all constants from the source binding's receiver's class/module to the target class/module.
-  # @param source_binding [Binding] the binding whose receiver's class/module to copy from
-  # @param target_class [Class, Module] the class/module to copy constants to
-  def self.copy_constants(source_binding, target_class)
-    source_klass = source_binding.receiver.class
-    source_klass.constants(false).each do |const|
-      value = source_klass.const_get(const)
-      target_class.const_set(const, value) unless target_class.const_defined?(const, false)
-    end
-  end
-
-  # Transfer specified local variables from a source binding to a new binding.
-  # @param symbols [Array<Symbol>] the local variable names to transfer
-  # @param source_binding [Binding] the binding to look up the variables in
-  # @return [Binding] a new binding with the specified local variables set
-  # @raise [NameError] if a symbol is not defined in the source binding
-  def self.local_variables_to_new_binding(symbols, source_binding)
-    new_binding = binding
-    symbols.each do |sym|
-      value = source_binding.local_variable_get(sym)
-      new_binding.local_variable_set(sym, value)
-    end
-    new_binding
   end
 end
