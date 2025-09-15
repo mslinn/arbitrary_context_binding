@@ -60,13 +60,16 @@ def full_test
   puts '  mirrored_binding: @foo = ' + mirrored_binding.eval('@foo').to_s # => 200
 end
 
+# Gets called in nugem_test
+def hello = 'Hello from Mars'
+
 # Just excercise those methods required by Nugem:
 #  - CustomBinding.new
 #  - CustomBinding#add_object_to_binding_as
 #  - CustomBinding#eval
 def nugem_test
   puts 'nugem_test'
-  custom_binding = CustomBinding.new TOPLEVEL_BINDING
+  custom_binding = CustomBinding.new binding # the current scope include the hello method
 
   bar = Bar.new 'value of bar.bar'
   custom_binding.add_object_to_binding_as('local_bar', bar)
@@ -75,7 +78,9 @@ def nugem_test
   another_bar = Bar.new 'value of another_bar.bar'
   custom_binding.add_object_to_binding_as('@another_test_bar', another_bar)
 
-  puts '  local_bar.tell_me_a_story         = ' + custom_binding.eval('@test_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
+  puts '  hello = ' + custom_binding.eval('hello') # => 'Hello from Mars'
+  puts
+  puts '  local_bar.tell_me_a_story         = ' + custom_binding.eval('local_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
   puts '  @test_bar.tell_me_a_story         = ' + custom_binding.eval('@test_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
   puts '  @another_test_bar.tell_me_a_story = ' + custom_binding.eval('@another_test_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
   puts
