@@ -55,15 +55,6 @@ Naming/FileName:
   Exclude:
     - Rakefile
 
-Style/Documentation:
-  Enabled: false
-
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
-Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: comma
-
 RSpec/ScatteredLet:
   Enabled: false
 
@@ -81,3 +72,15 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Max: 15
+
+Style/DocumentDynamicEvalDefinition:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
