@@ -1,6 +1,10 @@
+# Nugem only requires:
+#  - CustomBinding.new
+#  - CustomBinding#add_object_to_binding_as
+#  - CustomBinding#eval
 class CustomBinding
-  def initialize(object)
-    @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding } # this is how to get the (internal) binding for any object
+  def initialize(object = TOPLEVEL_BINDING)
+    @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding } # get (internal) binding for any object
   end
 
   # The new_name prefix determines whether object will be a local, instance variable within the_binding,
