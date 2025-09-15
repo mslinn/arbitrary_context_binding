@@ -5,12 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run selected Ruby file with ruby_lsp",
-      "program": "ruby ${file}",
-      "request": "launch",
-      "type": "ruby_lsp"
-    },
-    {
       "debugPort": "0",
       "name": "Attach with rdbg",
       "request": "attach",
