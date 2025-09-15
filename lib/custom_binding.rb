@@ -78,6 +78,7 @@ class CustomBinding
     end
   end
 
+  # @return result of evaluating the given statement, which can contain method calls and references to any type of variable
   def eval(statement)
     @binding.eval statement
   end
