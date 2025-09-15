@@ -1,13 +1,20 @@
-module CustomBinding
-  def self.add_object_to_binding_as(new_name, new_object, the_binding)
-    the_binding.eval "#{new_name} = ObjectSpace._id2ref(#{new_object.object_id})"
+class CustomBinding
+  def initialize(object)
+    @binding = object.instance_eval { binding } # this is how to get the (internal) binding for any object
+  end
+
+  # The new_name prefix determines whether object will be a local, instance variable within the_binding,
+  # or if it will be a global variable
+  def add_object_to_binding_as(new_name, object)
+    # ObjectSpace._id2ref retrieves the object by its id, which is globally available.
+    @binding.eval "#{new_name} = ObjectSpace._id2ref(#{object.object_id})"
   end
 
   # Copy all class variables from the source binding's receiver's class/module to the target class/module.
   # @param source_binding [Binding] the binding whose receiver's class/module to copy from
   # @param target_class [Class, Module] the class/module to copy class variables to
-  def self.copy_class_variables(source_binding, target_class)
-    source_klass = source_binding.receiver.class
+  def copy_class_variables(target_class)
+    source_klass = @binding.receiver.class
     source_klass.class_variables.each do |var|
       value = source_klass.class_variable_get(var)
       target_class.class_variable_set(var, value) # rubocop:disable Style/ClassVars
@@ -17,8 +24,8 @@ module CustomBinding
   # Copy all constants from the source binding's receiver's class/module to the target class/module.
   # @param source_binding [Binding] the binding whose receiver's class/module to copy from
   # @param target_class [Class, Module] the class/module to copy constants to
-  def self.copy_constants(source_binding, target_class)
-    source_klass = source_binding.receiver.class
+  def copy_constants(target_class)
+    source_klass = @binding.receiver.class
     source_klass.constants(false).each do |const|
       value = source_klass.const_get(const)
       target_class.const_set(const, value) unless target_class.const_defined?(const, false)
@@ -30,10 +37,10 @@ module CustomBinding
   # @param source_binding [Binding] the binding to look up the variables in
   # @return [Binding] a new binding with the specified local variables set
   # @raise [NameError] if a symbol is not defined in the source binding
-  def self.copy_local_variables(symbols, source_binding)
+  def self.copy_local_variables(symbols)
     new_binding = binding
     symbols.each do |sym|
-      value = source_binding.local_variable_get(sym)
+      value = @binding.local_variable_get(sym)
       new_binding.local_variable_set(sym, value)
     end
     new_binding
@@ -54,21 +61,25 @@ module CustomBinding
   #
   # @param var_name [Symbol, String] the variable name (e.g., :foo, :@bar, :@@baz, :$qux)
   # @param value [Object] the value to assign
-  # @param target_binding [Binding] the binding to assign the variable to
-  def self.copy_variable_to_binding(var_name, value, target_binding)
+  # @param @binding [Binding] the binding to assign the variable to
+  def self.copy_variable_to_binding(var_name, value)
     var_name = var_name.to_s
     case var_name
     when /^\$/ # global variable
       # Do nothing becaus globals are always visible
-      # eval("#{var_name} = ObjectSpace._id2ref(#{value.object_id})", target_binding, __FILE__, __LINE__)
+      # eval("#{var_name} = ObjectSpace._id2ref(#{value.object_id})", @binding, __FILE__, __LINE__)
     when /^@@/ # class variable
-      target_class = target_binding.receiver.class
+      target_class = @binding.receiver.class
       target_class.class_variable_set(var_name.to_sym, value) # rubocop:disable Style/ClassVars
     when /^@/ # instance variable
-      target_binding.receiver.instance_variable_set(var_name.to_sym, value)
+      @binding.receiver.instance_variable_set(var_name.to_sym, value)
     else # local variable
-      target_binding.local_variable_set(var_name.to_sym, value)
+      @binding.local_variable_set(var_name.to_sym, value)
     end
+  end
+
+  def eval(statement)
+    @binding.eval statement
   end
 
   # Create a new binding that reflects all instance variables and methods of the given source_binding.
@@ -80,7 +91,7 @@ module CustomBinding
   #
   # @param source_binding [Binding] the original binding
   # @return [Binding] a new binding for the same receiver as the source binding.
-  def self.mirror_binding(source_binding)
-    source_binding.receiver.instance_eval { binding }
+  def mirror_binding
+    @binding.receiver.instance_eval { binding }
   end
 end
