@@ -20,6 +20,8 @@ class Bar
   def initialize(bar)
     @bar = bar
   end
+
+  def tell_me_a_story = 'A man was born. He lived, then died.'
 end
 
 # Excercise all methods
@@ -69,11 +71,11 @@ def nugem_test
 
   bar = Bar.new 'value of bar.bar'
   custom_binding.add_object_to_binding_as('@test_bar', bar)
-  custom_binding.add_object_to_binding_as('local_bar', bar)
 
   another_bar = Bar.new 'value of another_bar.bar'
   custom_binding.add_object_to_binding_as('@another_test_bar', another_bar)
 
+  puts 'local_bar.tell_me_a_story' + custom_binding.eval('local_bar.tell_me_a_story')
   puts '@test_bar.bar = ' + custom_binding.eval('@test_bar.bar') # => "value of bar.bar"
   puts '@another_test_bar.bar = ' + custom_binding.eval('@another_test_bar.bar') # => "value of another_bar.bar"
   puts 'local_bar.bar = ' + custom_binding.eval('local_bar.bar') # => "value of bar.bar"
