@@ -58,6 +58,10 @@ def full_test
   puts mirrored_binding.eval '@foo' # => 200
 end
 
+def show(variable)
+  puts "#{variable} = #{custom_binding.eval variable}"
+end
+
 # Just excercise those methods required by Nugem
 def nugem_test
   puts 'nugem_test'
@@ -65,12 +69,14 @@ def nugem_test
 
   bar = Bar.new 'value of bar.bar'
   custom_binding.add_object_to_binding_as('@test_bar', bar)
+  custom_binding.add_object_to_binding_as('local_bar', bar)
 
   another_bar = Bar.new 'value of another_bar.bar'
   custom_binding.add_object_to_binding_as('@another_test_bar', another_bar)
 
-  puts custom_binding.eval '@test_bar.bar' # => "value of bar.bar"
-  puts custom_binding.eval '@another_test_bar.bar' # => "value of another_bar.bar"
+  puts '@test_bar.bar = ' + custom_binding.eval('@test_bar.bar') # => "value of bar.bar"
+  puts '@another_test_bar.bar = ' + custom_binding.eval('@another_test_bar.bar') # => "value of another_bar.bar"
+  puts 'local_bar.bar = ' + custom_binding.eval('local_bar.bar') # => "value of bar.bar"
 end
 
 nugem_test

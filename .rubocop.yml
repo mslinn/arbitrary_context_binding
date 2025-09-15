@@ -82,5 +82,9 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Style/StringConcatenation:
+  Exclude:
+    - playground/mirrored_instance_binding_example.rb
+
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
