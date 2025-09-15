@@ -1,6 +1,6 @@
 class CustomBinding
   def initialize(object)
-    @binding = object.instance_eval { binding } # this is how to get the (internal) binding for any object
+    @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding } # this is how to get the (internal) binding for any object
   end
 
   # The new_name prefix determines whether object will be a local, instance variable within the_binding,
