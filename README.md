@@ -1,6 +1,6 @@
-# `Custom_binding` [![Gem Version](https://badge.fury.io/rb/custom_binding.svg)](https://badge.fury.io/rb/custom_binding)
+# `custom_binding` [![Gem Version](https://badge.fury.io/rb/custom_binding.svg)](https://badge.fury.io/rb/custom_binding)
 
-Description of CustomBinding
+Construct or modify a Ruby binding and make it available anywhere. Useful for ERB rendering.
 
 
 ## Installation
@@ -26,7 +26,7 @@ $ bundle
 
 ## Usage
 
-Describe how to use this gem
+See [`playground/examples.rb`](playground/examples.rb).
 
 
 ## Development
