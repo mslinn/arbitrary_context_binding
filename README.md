@@ -1,6 +1,7 @@
 # `custom_binding` [![Gem Version](https://badge.fury.io/rb/custom_binding.svg)](https://badge.fury.io/rb/custom_binding)
 
-Construct or modify a Ruby binding and make it available anywhere. Useful for ERB rendering.
+Construct or modify a Ruby binding and make it available anywhere.
+This is useful for ERB rendering.
 
 
 ## Installation
