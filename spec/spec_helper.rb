@@ -1,7 +1,7 @@
 require 'rspec/expectations'
 
 require_relative '../lib/custom_binding'
-require_relative 'support/shared_contexts'
+require_relative 'support/test_data'
 
 RSpec.configure do |config|
   # See https://relishapp.com/rspec/rspec-core/docs/command-line/only-failures
