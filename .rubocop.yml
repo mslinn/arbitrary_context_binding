@@ -26,6 +26,8 @@ Layout/LineLength:
   Max: 150
 
 Metrics/AbcSize:
+  Exclude:
+    - playground/examples.rb
   Max: 35
 
 Metrics/BlockLength:

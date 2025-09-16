@@ -18,7 +18,7 @@ module CustomBindingTest
   class TestData
     include CustomBinding
 
-    attr_reader :acb, :acb12, :acb13, :acb_all, :acb_module, :acb_modules, :acb_object, :obj1, :obj2, :obj3, :project, :repository, :saved_binding
+    attr_reader :acb, :acb12, :acb13, :cb_all, :cb_module, :cb_modules, :cb_object, :obj1, :obj2, :obj3, :project, :repository, :saved_binding
 
     # The contents the binding are a snapshot of the calling scope
     # RSpec's crazy shenanegans around how let works mean that let declarations are not present in the binding as instance variables
@@ -35,25 +35,30 @@ module CustomBindingTest
       @repository = Repository.new 'alice'
       @project = Project.new 'cool app'
 
-      @acb = CustomBinding.new base_binding: @saved_binding
+      @acb = CustomBinding.new @saved_binding
 
-      @acb_objects = CustomBinding.new(base_binding: @saved_binding, objects: [@project, @repository])
+      @cb_objects = CustomBinding.new @saved_binding
+      @cb_objects.add_object_to_binding_as '@project', @project
+      @cb_objects.add_object_to_binding_as '@repository', @repository
 
       @obj1 = Struct.new(:foo).new('foo from obj1')
       @obj2 = Struct.new(:bar).new('bar from obj2')
       @obj3 = Struct.new(:foo).new('foo from obj3')
-      @acb12 = CustomBinding.new(base_binding: @saved_binding, objects: [@obj1, @obj2])
-      @acb13 = CustomBinding.new(base_binding: @saved_binding, objects: [@obj1, @obj3])
 
-      @acb_module = CustomBinding.new(base_binding: @saved_binding, modules: [TestHelpers])
-      @acb_modules = CustomBinding.new(base_binding: @saved_binding, modules: [OtherHelpers, TestHelpers])
+      @acb12 = CustomBinding.new @saved_binding
+      @acb12.add_object_to_binding_as '@obj1', @obj1
+      @acb12.add_object_to_binding_as '@obj2', @obj2
 
-      # Do not include obj3 because foo would be ambiguous
-      @acb_all = CustomBinding.new(
-        base_binding: @saved_binding,
-        modules:      [TestHelpers],
-        objects:      [@obj1, @obj2, @project, @repository]
-      )
+      @acb13 = CustomBinding.new @saved_binding
+      @acb13.add_object_to_binding_as '@obj1', @obj1
+      @acb13.add_object_to_binding_as '@obj3', @obj3
+
+      @cb_all = CustomBinding.new @saved_binding
+      @cb_all.add_object_to_binding_as '@obj1', @obj1
+      @cb_all.add_object_to_binding_as '@obj2', @obj2
+      @cb_all.add_object_to_binding_as '@obj3', @obj3
+      @cb_all.add_object_to_binding_as '@project', @project
+      @cb_all.add_object_to_binding_as '@repository', @repository
     end
   end
 end

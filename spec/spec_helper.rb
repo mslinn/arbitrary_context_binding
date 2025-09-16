@@ -1,5 +1,6 @@
 require 'rspec/expectations'
 
+require_relative '../lib/custom_binding'
 require_relative 'support/shared_contexts'
 
 RSpec.configure do |config|

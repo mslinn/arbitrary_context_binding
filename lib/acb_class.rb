@@ -33,7 +33,7 @@ class CustomBindingError < StandardError; end
 # acb.provider_for(:method_name)  # => #<struct foo="obj1">
 # acb.provider_for(:@blah)  # => :base_binding
 module CustomBinding
-  class CustomBinding
+  class OldCustomBinding
     attr_reader :base_binding, :modules, :objects
 
     # @param base_binding: is the binding to use as the base for this context binding.
