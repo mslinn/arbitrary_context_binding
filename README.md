@@ -43,7 +43,7 @@ You should do the above before running Visual Studio Code.
 ### Run the Tests
 
 ```shell
-$ bundle exec rake test
+$ bin/rspec
 ```
 
 
