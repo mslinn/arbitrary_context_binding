@@ -1,17 +1,17 @@
 require 'erb'
 
-class AmbiguousMethodError < StandardError; end
+class CustomBindingError < StandardError; end
 
-# This class must be constructed *after* the binding, the objects, and the modules to be referenced
-# have been constructed and are available.
-#
 # Provide a binding that resolves methods against an array of objects.
 # Raise NameError if more than one object responds to the same method.
 # Only public methods will be honored.
 #
+# This class can be constructed before or after the binding, the objects, and the modules to be referenced
+# have been constructed and are available.
+#
 # Modules and classes can also contribute methods to delegation resolution.
 #
-# The internally constructed ERB provided by ArbitraryContextBinding#render can use:
+# The internally constructed ERB provided by CustomBinding#render can use:
 #  - Instance vars: <%= @blah.user_name %>
 #  - Delegated instance methods: <%= user_name %>
 #  - Module and class methods: <%= Project.version %>
@@ -28,12 +28,12 @@ class AmbiguousMethodError < StandardError; end
 # See the RSpec tests for further information.
 #
 # @example
-# acb = ArbitraryContextBinding.new(objects: [obj1, obj2])
+# acb = CustomBinding.new(objects: [obj1, obj2])
 # expanded_template = acb.render template
 # acb.provider_for(:method_name)  # => #<struct foo="obj1">
 # acb.provider_for(:@blah)  # => :base_binding
-module ArbitraryContextBinding
-  class ArbitraryContextBinding
+module CustomBinding
+  class CustomBinding
     attr_reader :base_binding, :modules, :objects
 
     # @param base_binding: is the binding to use as the base for this context binding.
@@ -137,7 +137,7 @@ module ArbitraryContextBinding
       #  - no following spaces are removed
       #  - only a single newline is removed
       erb = ERB.new template, trim_mode: '-'
-      acb = ArbitraryContextBinding.new(base_binding: @base_binding, modules: @modules, objects: @objects)
+      acb = CustomBinding.new(base_binding: @base_binding, modules: @modules, objects: @objects)
       erb.result acb.the_binding
     rescue NameError => e
       puts e.message
@@ -148,7 +148,7 @@ module ArbitraryContextBinding
     def the_binding = @base_binding
 
     def to_string
-      msg = 'ArbitraryContextBinding'
+      msg = 'CustomBinding'
       msg += " #{@base_binding.local_variables.length} objects" if @base_binding.local_variables.any?
       msg += " #{@base_binding.instance_variables.length} objects" if @base_binding.instance_variables.any?
       msg += " #{@objects.length} objects" if @objects.any?

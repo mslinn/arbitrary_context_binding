@@ -1,7 +1,7 @@
 require_relative 'define_stuff'
 
 # This is an example of defining a top-level object:
-acb_all = ArbitraryContextBinding.new(
+acb_all = CustomBinding.new(
   objects: [],
   modules: [Blah, TestHelpers]
 )

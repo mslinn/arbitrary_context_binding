@@ -2,8 +2,8 @@ require 'erb'
 
 require_relative 'spec_helper'
 
-module ArbitraryContextBindingTest
-  RSpec.describe ArbitraryContextBinding do
+module CustomBindingTest
+  RSpec.describe CustomBinding do
     describe 'using pre-existing instance variables' do
       it 'renders instance variable values from caller scope' do
         template = 'User: <%= @repository.user_name %>, Project: <%= @project.title %>'

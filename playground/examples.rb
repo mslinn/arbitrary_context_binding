@@ -27,7 +27,7 @@ end
 # Excercise all methods
 def full_test
   puts 'full_test'
-  custom_binding = CustomBinding.new Foo.new
+  custom_binding = CustomBinding::CustomBinding.new Foo.new
 
   # Create a new (internal) binding for the same object
   mirrored_binding = custom_binding.mirror_binding
@@ -69,7 +69,7 @@ def hello = 'Hello from Mars'
 #  - CustomBinding#eval
 def nugem_test
   puts 'nugem_test'
-  custom_binding = CustomBinding.new binding # the current scope include the hello method
+  custom_binding = CustomBinding::CustomBinding.new binding # the current scope include the hello method
 
   bar = Bar.new 'value of bar.bar'
   custom_binding.add_object_to_binding_as('local_bar', bar)

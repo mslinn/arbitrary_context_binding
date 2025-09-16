@@ -1,12 +1,12 @@
-require_relative 'lib/arbitrary_context_binding/version'
+require_relative 'lib/custom_binding/version'
 
 Gem::Specification.new do |spec|
-  host = 'https://github.com/mslinn/arbitrary_context_binding'
+  host = 'https://github.com/mslinn/custom_binding'
 
   spec.authors               = ['Mike Slinn']
   spec.description           = <<~END_DESC
-    Write a longer description of the gem.
-    Use as many lines as you like.
+    Construct or modify a Ruby binding and make it available anywhere.
+    Useful for ERB rendering.
   END_DESC
   spec.email                 = ['mslinn@mslinn.com']
   spec.files                 = Dir['.rubocop.yml', 'LICENSE.*', 'Rakefile', '{lib,spec}/**/*', '*.gemspec', '*.md']
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
     'homepage_uri'      => spec.homepage,
     'source_code_uri'   => host,
   }
-  spec.name                 = 'arbitrary_context_binding'
+  spec.name                 = 'custom_binding'
   spec.platform             = Gem::Platform::RUBY
   spec.post_install_message = <<~END_MESSAGE
 
@@ -28,6 +28,6 @@ Gem::Specification.new do |spec|
   END_MESSAGE
   spec.require_paths         = ['lib']
   spec.required_ruby_version = '>= 3.1.0'
-  spec.summary               = 'Write summary of what the gem is for'
-  spec.version               = ArbitraryContextBinding::VERSION
+  spec.summary               = 'Construct or modify a Ruby binding and make it available anywhere. Useful for ERB rendering.'
+  spec.version               = CustomBinding::VERSION
 end

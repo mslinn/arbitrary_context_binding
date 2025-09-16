@@ -2,7 +2,7 @@ require 'erb'
 
 require_relative 'spec_helper'
 
-# ArbitraryContextBinding.provider_map value has this value: {
+# CustomBinding.provider_map value has this value: {
 #   :foo=>#<struct  foo="foo from obj1">, :foo==>#<struct  foo="foo from obj1">,
 #   :bar==>#<struct  bar="bar from obj2">, :bar=>#<struct  bar="bar from obj2">,
 #   :helper=>TestHelpers, :helper = TestHelpers, :greet = TestHelpers,
@@ -10,8 +10,8 @@ require_relative 'spec_helper'
 #   :@__inspect_output = :base_binding, :@__memoized = :base_binding,
 #   :@repository = :base_binding, :@project = :base_binding
 # }
-module ArbitraryContextBindingTest
-  RSpec.describe ACBTestData do
+module CustomBindingTest
+  RSpec.describe TestData do
     x = described_class.new
     context 'with provider_for and providers_for' do
       it 'returns the correct provider for an unambiguous object method' do

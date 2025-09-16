@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-# The arbitrary_context_binding gem dependencies are defined in arbitrary_context_binding.gemspec
+# The custom_binding gem dependencies are defined in custom_binding.gemspec
 gemspec
 
 group :test, :development do

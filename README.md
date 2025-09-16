@@ -1,6 +1,6 @@
-# `Arbitrary_context_binding` [![Gem Version](https://badge.fury.io/rb/arbitrary_context_binding.svg)](https://badge.fury.io/rb/arbitrary_context_binding)
+# `Custom_binding` [![Gem Version](https://badge.fury.io/rb/custom_binding.svg)](https://badge.fury.io/rb/custom_binding)
 
-Description of ArbitraryContextBinding
+Description of CustomBinding
 
 
 ## Installation
@@ -8,13 +8,13 @@ Description of ArbitraryContextBinding
 Either add this line to your application&rsquo;s `Gemfile`:
 
 ```ruby
-gem 'arbitrary_context_binding'
+gem 'custom_binding'
 ```
 
 ... or add the following to your application&rsquo;s `.gemspec`:
 
 ```ruby
-spec.add_dependency 'arbitrary_context_binding'
+spec.add_dependency 'custom_binding'
 ```
 
 And then execute:
@@ -77,7 +77,7 @@ $ bundle exec rake release
 
 ## Contributing
 
-Bug reports and pull requests are welcome at https://github.com/mslinn/arbitrary_context_binding.
+Bug reports and pull requests are welcome at https://github.com/mslinn/custom_binding.
 
 
 ## License

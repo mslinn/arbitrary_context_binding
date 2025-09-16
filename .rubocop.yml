@@ -30,7 +30,7 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Exclude:
-    - arbitrary_context_binding.gemspec
+    - custom_binding.gemspec
   Max: 30
 
 Metrics/ClassLength:
@@ -84,7 +84,7 @@ Style/FrozenStringLiteralComment:
 
 Style/StringConcatenation:
   Exclude:
-    - playground/mirrored_instance_binding_example.rb
+    - playground/examples.rb
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma

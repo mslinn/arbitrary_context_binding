@@ -1,6 +1,6 @@
-require_relative '../../lib/arbitrary_context_binding'
+require_relative '../../lib/custom_binding'
 
-module ArbitraryContextBindingTest
+module CustomBindingTest
   module TestHelpers
     def self.version = '9.9.9'
     def self.helper  = 'helper called'
@@ -15,8 +15,8 @@ module ArbitraryContextBindingTest
     def self.helper = 'other helper'
   end
 
-  class ACBTestData
-    include ArbitraryContextBinding
+  class TestData
+    include CustomBinding
 
     attr_reader :acb, :acb12, :acb13, :acb_all, :acb_module, :acb_modules, :acb_object, :obj1, :obj2, :obj3, :project, :repository, :saved_binding
 
@@ -35,21 +35,21 @@ module ArbitraryContextBindingTest
       @repository = Repository.new 'alice'
       @project = Project.new 'cool app'
 
-      @acb = ArbitraryContextBinding.new base_binding: @saved_binding
+      @acb = CustomBinding.new base_binding: @saved_binding
 
-      @acb_objects = ArbitraryContextBinding.new(base_binding: @saved_binding, objects: [@project, @repository])
+      @acb_objects = CustomBinding.new(base_binding: @saved_binding, objects: [@project, @repository])
 
       @obj1 = Struct.new(:foo).new('foo from obj1')
       @obj2 = Struct.new(:bar).new('bar from obj2')
       @obj3 = Struct.new(:foo).new('foo from obj3')
-      @acb12 = ArbitraryContextBinding.new(base_binding: @saved_binding, objects: [@obj1, @obj2])
-      @acb13 = ArbitraryContextBinding.new(base_binding: @saved_binding, objects: [@obj1, @obj3])
+      @acb12 = CustomBinding.new(base_binding: @saved_binding, objects: [@obj1, @obj2])
+      @acb13 = CustomBinding.new(base_binding: @saved_binding, objects: [@obj1, @obj3])
 
-      @acb_module = ArbitraryContextBinding.new(base_binding: @saved_binding, modules: [TestHelpers])
-      @acb_modules = ArbitraryContextBinding.new(base_binding: @saved_binding, modules: [OtherHelpers, TestHelpers])
+      @acb_module = CustomBinding.new(base_binding: @saved_binding, modules: [TestHelpers])
+      @acb_modules = CustomBinding.new(base_binding: @saved_binding, modules: [OtherHelpers, TestHelpers])
 
       # Do not include obj3 because foo would be ambiguous
-      @acb_all = ArbitraryContextBinding.new(
+      @acb_all = CustomBinding.new(
         base_binding: @saved_binding,
         modules:      [TestHelpers],
         objects:      [@obj1, @obj2, @project, @repository]

@@ -15,7 +15,7 @@ module OtherHelpers
 end
 
 module DefineStuff
-  # include ArbitraryContextBinding
+  # include CustomBinding
 
   repository_class = Struct.new(:user_name)
   project_class    = Struct.new(:title)
@@ -27,7 +27,7 @@ module DefineStuff
   obj2 = Struct.new(:bar).new('bar from obj2')
   obj3 = Struct.new(:foo).new('foo from obj3')
 
-  @acb_all = ArbitraryContextBinding.new(
+  @acb_all = CustomBinding.new(
     objects:      [obj1, obj2, obj3],
     modules:      [TestHelpers],
     base_binding: binding
