@@ -100,5 +100,24 @@ module CustomBinding
     def mirror_binding
       @binding.receiver.instance_eval { binding }
     end
+
+    # List all variables (local, instance, class, global) and method names defined in the binding.
+    # @return [Hash] a hash with keys :locals, :instance_vars, :class_vars, :globals, :methods
+    def list_binding_contents
+      {
+        locals:        @binding.local_variables,
+        instance_vars: @binding.receiver.instance_variables,
+        class_vars:    @binding.receiver.class.class_variables,
+        globals:       global_variables,
+        methods:       @binding.receiver.methods,
+      }
+    end
+
+    def to_s
+      contents = list_binding_contents.map do |key, value|
+        "#{key}: #{value.inspect}"
+      end.join(', ')
+      "#<CustomBinding:#{object_id} binding=#{@binding.inspect} { #{contents} }>"
+    end
   end
 end
