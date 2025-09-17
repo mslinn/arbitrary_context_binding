@@ -1,7 +1,17 @@
 # `custom_binding` [![Gem Version](https://badge.fury.io/rb/custom_binding.svg)](https://badge.fury.io/rb/custom_binding)
 
 Construct or modify a Ruby binding and make it available anywhere.
-This is useful for ERB rendering.
+This is useful for [ERB rendering](https://github.com/ruby/erb).
+
+This Ruby gem was created because [Nugem 2](https://github.com/mslinn/nugem/tree/wip) needed it,
+and this seemed like such a generally useful gem to have around, especially if you use ERBs.
+
+You can [read an article](https://www.mslinn.com/ruby/6900-custom_binding.html)
+I wrote that:
+
+- Introduces what Ruby bindings are.
+- Provides simple examples of how manipulating Ruby bindings can be useful.
+- Discusses this `custom_binding` gem in detail.
 
 
 ## Installation

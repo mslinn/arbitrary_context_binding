@@ -9,7 +9,14 @@ Gem::Specification.new do |spec|
     Useful for ERB rendering.
   END_DESC
   spec.email                 = ['mslinn@mslinn.com']
-  spec.files                 = Dir['.rubocop.yml', 'LICENSE.*', 'Rakefile', '{lib,spec,playground}/**/*', '*.gemspec', '*.md']
+  spec.files                 = Dir[
+                                 '.rubocop.yml',
+                                 'LICENSE.*',
+                                 'Rakefile',
+                                 '{lib,spec,playground}/**/*',
+                                 '*.gemspec',
+                                 '*.md'
+                               ]
   spec.homepage              = host
   spec.license               = 'MIT'
   spec.metadata = {
