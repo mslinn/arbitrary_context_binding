@@ -4,8 +4,13 @@
 #  - CustomBinding#eval
 module CustomBinding
   class CustomBinding
-    def initialize(object: TOPLEVEL_BINDING)
+    # Add objects to the internal Binding instance
+    #
+    def initialize(object = TOPLEVEL_BINDING, other_objects = {})
       @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding } # get (internal) binding for any object
+      raise ArgumentError, "other_objects must be a Hash, but it was a #{other_objects.class.name}" unless other_objects.instance_of?(Hash)
+
+      other_objects.each { |k, v| add_object_to_binding_as k, v }
     end
 
     # The new_name prefix determines whether object will be a local, instance variable within the_binding,
