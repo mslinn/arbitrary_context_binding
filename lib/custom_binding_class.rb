@@ -4,7 +4,7 @@
 #  - CustomBinding#eval
 module CustomBinding
   class CustomBinding
-    def initialize(object = TOPLEVEL_BINDING)
+    def initialize(object: TOPLEVEL_BINDING)
       @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding } # get (internal) binding for any object
     end
 

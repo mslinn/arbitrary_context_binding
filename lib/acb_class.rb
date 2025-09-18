@@ -1,5 +1,7 @@
 require 'erb'
 
+# TODO: Scavenge this and fold in anything useful into custom_binding_class.rb
+
 class CustomBindingError < StandardError; end
 
 # Provide a binding that resolves methods against an array of objects.
