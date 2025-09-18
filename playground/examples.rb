@@ -24,7 +24,7 @@ class Bar
   def tell_me_a_story = 'A man was born. He lived, then died.'
 end
 
-# Excercise all methods
+# Exercise all CustomBinding methods
 def full_test
   puts 'full_test'
   custom_binding = CustomBinding::CustomBinding.new Foo.new
@@ -63,7 +63,7 @@ end
 # Gets called in nugem_test
 def hello = 'Hello from Mars'
 
-# Just excercise those methods required by Nugem:
+# Just exercise those CustomBinding methods required by Nugem:
 #  - CustomBinding.new
 #  - CustomBinding#add_object_to_binding_as
 #  - CustomBinding#eval
@@ -78,17 +78,19 @@ def nugem_test
   another_bar = Bar.new 'value of another_bar.bar'
   custom_binding.add_object_to_binding_as('@another_test_bar', another_bar)
 
-  puts '  hello = ' + custom_binding.eval('hello') # => 'Hello from Mars'
-  puts
-  puts '  local_bar.tell_me_a_story         = ' + custom_binding.eval('local_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
-  puts '  @test_bar.tell_me_a_story         = ' + custom_binding.eval('@test_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
-  puts '  @another_test_bar.tell_me_a_story = ' + custom_binding.eval('@another_test_bar.tell_me_a_story') # => 'A man was born. He lived, then died.'
-  puts
-  puts '  local_bar.bar         = '     + custom_binding.eval('local_bar.bar') # => "value of bar.bar"
-  puts '  @test_bar.bar         = '     + custom_binding.eval('@test_bar.bar') # => "value of bar.bar"
-  puts '  @another_test_bar.bar = '     + custom_binding.eval('@another_test_bar.bar') # => "value of another_bar.bar"
-  puts
+  puts <<-END_MSG
+  hello = #{custom_binding.eval('hello')}
+
+  local_bar.tell_me_a_story         = #{custom_binding.eval('local_bar.tell_me_a_story')}
+  @test_bar.tell_me_a_story         = #{custom_binding.eval('@test_bar.tell_me_a_story')}
+  @another_test_bar.tell_me_a_story = #{custom_binding.eval('@another_test_bar.tell_me_a_story')}
+
+  local_bar.bar         = #{custom_binding.eval('local_bar.bar')}
+  @test_bar.bar         = #{custom_binding.eval('@test_bar.bar')}
+  @another_test_bar.bar = #{custom_binding.eval('@another_test_bar.bar')}
+  END_MSG
 end
 
 nugem_test
+puts
 full_test
