@@ -5,7 +5,9 @@
 module CustomBinding
   class CustomBinding
     # Add objects to the internal Binding instance
-    #
+    # @param object [Binding, Object] provides the seed for the internal binding.
+    #        If a Binding is provided then changes made to it in this class will be visible in the originating code.
+    # @param other_objects [Hash] name/value pairs of objects to mirror in the internal binding
     def initialize(object = TOPLEVEL_BINDING, other_objects = {})
       @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding } # get (internal) binding for any object
       raise ArgumentError, "other_objects must be a Hash, but it was a #{other_objects.class.name}" unless other_objects.instance_of?(Hash)
