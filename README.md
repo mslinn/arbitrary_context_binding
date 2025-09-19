@@ -3,6 +3,8 @@
 Construct or modify a Ruby binding and make it available anywhere.
 This is useful for [ERB rendering](https://github.com/ruby/erb).
 
+Also monkey-patches [Binding](https://ruby-doc.org/3.4.1/Binding.html) so its output is useful for debugging.
+
 This Ruby gem was created because [Nugem 2](https://github.com/mslinn/nugem/tree/wip) needed it,
 and this seemed like such a generally useful gem to have around, especially if you use ERBs.
 
