@@ -75,6 +75,9 @@ RSpec/ExampleLength:
 RSpec/MultipleExpectations:
   Max: 15
 
+Style/BeginBlock:
+  Enabled: false
+
 Style/DocumentDynamicEvalDefinition:
   Enabled: false
 

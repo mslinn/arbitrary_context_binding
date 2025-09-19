@@ -110,21 +110,39 @@ module CustomBinding
       @binding.receiver.instance_eval { binding }
     end
 
+    # @return [String] all definitions in @binding
+    def to_s
+      contents = binding_contents.map do |key, value|
+        "#{key}: #{value.map(&:to_s).join(', ')}"
+      end.join("\n  ")
+      "#<CustomBinding #{object_id}\n  #{contents}\n>"
+    end
+
+    # @return [String] compact representation of all definitions in @binding
+    def inspect
+      contents = binding_contents.map do |key, value|
+        "#{key}: #{value}"
+      end.join(', ')
+      "#<CustomBinding #{object_id} { #{contents} }>"
+    end
+
+    private
+
     # Report all variables (local, instance, class, global) and method names defined in the binding
     # that are not part of TOPLEVEL_BINDING.
     # Only methods defined in the receiver are reported; inherited methods are ignored.
     # @return [Hash] a hash with keys :class_vars, :instance_vars, :globals, :locals, :methods.
-    def binding_contents
-      class_vars = @binding.receiver.class.class_variables
+    def binding_contents(the_binding = @binding)
+      class_vars = the_binding.receiver.class.class_variables
 
       top_globals = TOPLEVEL_BINDING.send :global_variables
       globals_filtered = global_variables.reject { |x| top_globals.include?(x) }
 
-      instance_vars = @binding.receiver.instance_variables
+      instance_vars = the_binding.receiver.instance_variables
 
-      locals = @binding.local_variables.reject { |x| x == :_ }
+      locals = the_binding.local_variables.reject { |x| x == :_ }
 
-      methods_filtered = @binding.receiver.methods(false)
+      methods_filtered = the_binding.receiver.methods(false)
 
       result = {}
       result[:class_vars]    = class_vars if class_vars.any?
@@ -133,20 +151,6 @@ module CustomBinding
       result[:locals]        = locals if locals.any?
       result[:methods]       = methods_filtered if methods_filtered.any?
       result
-    end
-
-    def to_s
-      contents = binding_contents.map do |key, value|
-        "#{key}: #{value.map(&:to_s).join(', ')}"
-      end.join("\n  ")
-      "#<CustomBinding #{object_id}\n  #{contents}\n>"
-    end
-
-    def inspect
-      contents = binding_contents.map do |key, value|
-        "#{key}: #{value}"
-      end.join(', ')
-      "#<CustomBinding #{object_id} { #{contents} }>"
     end
   end
 end
