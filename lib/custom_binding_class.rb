@@ -9,8 +9,10 @@ module CustomBinding
     #        If a Binding is provided then changes made to it in this class will be visible in the originating code.
     # @param other_objects [Hash] name/value pairs of objects to mirror in the internal binding
     def initialize(object = TOPLEVEL_BINDING, other_objects = {})
-      @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding } # get (internal) binding for any object
-      raise ArgumentError, "other_objects must be a Hash, but it was a #{other_objects.class.name}" unless other_objects.instance_of?(Hash)
+      # get (internal) binding for any object
+      @binding = object.instance_of?(Binding) ? object : object.instance_eval { binding }
+      raise ArgumentError, "other_objects must be a Hash, but it was a #{other_objects.class.name}" \
+        unless other_objects.instance_of?(Hash)
 
       other_objects.each { |k, v| add_object_to_binding_as k, v }
     end
@@ -108,23 +110,43 @@ module CustomBinding
       @binding.receiver.instance_eval { binding }
     end
 
-    # List all variables (local, instance, class, global) and method names defined in the binding.
-    # @return [Hash] a hash with keys :locals, :instance_vars, :class_vars, :globals, :methods
-    def list_binding_contents
-      {
-        locals:        @binding.local_variables,
-        instance_vars: @binding.receiver.instance_variables,
-        class_vars:    @binding.receiver.class.class_variables,
-        globals:       global_variables,
-        methods:       @binding.receiver.methods,
-      }
+    # Report all variables (local, instance, class, global) and method names defined in the binding
+    # that are not part of TOPLEVEL_BINDING.
+    # Only methods defined in the receiver are reported; inherited methods are ignored.
+    # @return [Hash] a hash with keys :class_vars, :instance_vars, :globals, :locals, :methods.
+    def binding_contents
+      class_vars = @binding.receiver.class.class_variables
+
+      top_globals = TOPLEVEL_BINDING.send :global_variables
+      globals_filtered = global_variables.reject { |x| top_globals.include?(x) }
+
+      instance_vars = @binding.receiver.instance_variables
+
+      locals = @binding.local_variables.reject { |x| x == :_ }
+
+      methods_filtered = @binding.receiver.methods(false)
+
+      result = {}
+      result[:class_vars]    = class_vars if class_vars.any?
+      result[:globals]       = globals_filtered if globals_filtered.any?
+      result[:instance_vars] = instance_vars if instance_vars.any?
+      result[:locals]        = locals if locals.any?
+      result[:methods]       = methods_filtered if methods_filtered.any?
+      result
     end
 
     def to_s
-      contents = list_binding_contents.map do |key, value|
-        "#{key}: #{value.inspect}"
+      contents = binding_contents.map do |key, value|
+        "#{key}: #{value.map(&:to_s).join(', ')}"
+      end.join("\n  ")
+      "#<CustomBinding #{object_id}\n  #{contents}\n>"
+    end
+
+    def inspect
+      contents = binding_contents.map do |key, value|
+        "#{key}: #{value}"
       end.join(', ')
-      "#<CustomBinding:#{object_id} binding=#{@binding.inspect} { #{contents} }>"
+      "#<CustomBinding #{object_id} { #{contents} }>"
     end
   end
 end
