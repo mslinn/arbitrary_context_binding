@@ -68,15 +68,17 @@ The following will allow you to experiment:
 $ bin/console
 ```
 
-Here is a short example of how the `Binding` monkey patch overrides `Binding#to_s` and `Binding#inspect`
-to make life easier for programmers:
+Here is a short example of how the `Binding` monkey patch overrides `Binding#to_s`
+and `Binding#inspect` to make life easier for programmers:
 
 ```shell
 $ bin/console
 irb(main):001> y = 3
 => 3
-irb(main):002> b = binding
-=> #&lt;Binding 7380 { locals: [:b, :y], methods: [:inspect, :to_s] }>
+irb(main):002> $blah = 33
+=> 33
+irb(main):003> b = binding
+=> #&lt;Binding 10020 { globals: [:$blah], locals: [:b, :y] }>
 ```
 
 
