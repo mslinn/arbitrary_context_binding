@@ -77,7 +77,7 @@ module CustomBinding
     # @return result of rendering the given statement contained within <% %> tags,
     # swhich can contain method calls and references to any type of variable
     def result(statement)
-      erb = ERB.new statement
+      erb = ERB.new statement, trim_mode: '-'
       erb.result @binding
     end
 
