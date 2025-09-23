@@ -28,36 +28,36 @@ module CustomBindingTest
 
     it 'renders instance variable values from caller scope' do
       template = 'User: <%= @repository.user_name %>, Project: <%= @project.title %>'
-      result = cb.render(template)
+      result = cb.result(template)
       expect(result).to eq('User: alice, Project: cool app')
     end
 
     it 'delegates multiple methods from a module' do
       template = 'v=<%= version %>, h=<%= helper %>'
-      result = cb.render(template)
+      result = cb.result(template)
       expect(result).to eq('v=9.9.9, h=helper called')
     end
 
     it 'delegates module methods with arguments' do
       template = "<%= greet('bob') %>"
-      result = cb.render(template)
+      result = cb.result(template)
       expect(result).to eq('Hello, bob!')
     end
 
     it 'delegates module methods that take a block' do
       template = '<%= with_block { |x| x.upcase } %>'
-      result = cb.render(template)
+      result = cb.result(template)
       expect(result).to eq('BLOCK ARG')
     end
 
     it 'delegates methods from objects' do
       template = 'User: <%= user_name %>, Title: <%= title %>'
-      result = cb.render(template)
+      result = cb.result(template)
       expect(result).to eq('User: alice, Title: cool app')
     end
 
     it 'raises NameError with no matching method' do
-      expect { cb.render('<%= zzzzzzzzzz %>') }.to raise_error(NameError)
+      expect { cb.result('<%= zzzzzzzzzz %>') }.to raise_error(NameError)
     end
 
     context 'with respond_to?' do

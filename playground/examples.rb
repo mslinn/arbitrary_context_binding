@@ -80,7 +80,7 @@ def nugem_test
 
   puts <<-END_MSG
   local_bar.eval '1+2' = #{custom_binding.eval '1+2'}
-  local_bar.render '<%= 1+2 %>' = #{custom_binding.render '<%= 1+2 %>'}
+  local_bar.result '<%= 1+2 %>' = #{custom_binding.result '<%= 1+2 %>'}
 
   hello = #{custom_binding.eval('hello')}
 

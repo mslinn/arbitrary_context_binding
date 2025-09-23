@@ -13,7 +13,7 @@ class CustomBindingError < StandardError; end
 #
 # Modules and classes can also contribute methods to delegation resolution.
 #
-# The internally constructed ERB provided by CustomBinding#render can use:
+# The internally constructed ERB provided by CustomBinding#result can use:
 #  - Instance vars: <%= @blah.user_name %>
 #  - Delegated instance methods: <%= user_name %>
 #  - Module and class methods: <%= Project.version %>
@@ -31,7 +31,7 @@ class CustomBindingError < StandardError; end
 #
 # @example
 # acb = CustomBinding.new(objects: [obj1, obj2])
-# expanded_template = acb.render template
+# expanded_template = acb.result template
 # acb.provider_for(:method_name)  # => #<struct foo="obj1">
 # acb.provider_for(:@blah)  # => :base_binding
 module CustomBinding
@@ -133,7 +133,7 @@ module CustomBinding
     # Render an ERB template string in the fully constructed context.
     # @param template [String] The ERB template to render.
     # @return [String] The rendered (expanded) template.
-    def render(template)
+    def result(template)
       # For ERB (not necessarily with Rails), trim_mode: '-' removes one following newline:
       #  - the newline must be the first char after the > that ends the ERB expression
       #  - no following spaces are removed
