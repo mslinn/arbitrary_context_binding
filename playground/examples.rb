@@ -79,6 +79,9 @@ def nugem_test
   custom_binding.add_object_to_binding_as('@another_test_bar', another_bar)
 
   puts <<-END_MSG
+  local_bar.eval '1+2' = #{custom_binding.eval '1+2'}
+  local_bar.render '<%= 1+2 %>' = #{custom_binding.render '<%= 1+2 %>'}
+
   hello = #{custom_binding.eval('hello')}
 
   local_bar.tell_me_a_story         = #{custom_binding.eval('local_bar.tell_me_a_story')}
