@@ -55,7 +55,7 @@ module CustomBinding
 
     # @return [String] compact representation of all definitions in @binding
     def inspect
-      contents = binding_contents.sort.map do |key, value|
+      contents = binding_contents.map do |key, value|
         "#{key}: #{value}"
       end.join(', ')
       "#<CustomBinding #{object_id} { #{contents} }>"
@@ -83,7 +83,7 @@ module CustomBinding
 
     # @return [String] all definitions in @binding
     def to_s
-      contents = binding_contents.sort.map do |key, value|
+      contents = binding_contents.map do |key, value|
         "#{key}: #{value.map(&:to_s).join(', ')}"
       end.join("\n  ")
       "#<CustomBinding #{object_id}\n  #{contents}\n>"
@@ -108,11 +108,11 @@ module CustomBinding
       methods_filtered = the_binding.receiver.methods(false)
 
       result = {}
-      result[:class_vars]    = class_vars if class_vars.any?
-      result[:globals]       = globals_filtered if globals_filtered.any?
-      result[:instance_vars] = instance_vars if instance_vars.any?
-      result[:locals]        = locals if locals.any?
-      result[:methods]       = methods_filtered if methods_filtered.any?
+      result[:class_vars]    = class_vars.sort if class_vars.any?
+      result[:globals]       = globals_filtered.sort if globals_filtered.any?
+      result[:instance_vars] = instance_vars.sort if instance_vars.any?
+      result[:locals]        = locals.sort if locals.any?
+      result[:methods]       = methods_filtered.sort if methods_filtered.any?
       result
     end
   end
