@@ -55,7 +55,7 @@ module CustomBinding
 
     # @return [String] compact representation of all definitions in @binding
     def inspect
-      contents = binding_contents.map do |key, value|
+      contents = binding_contents.sort.map do |key, value|
         "#{key}: #{value}"
       end.join(', ')
       "#<CustomBinding #{object_id} { #{contents} }>"
@@ -83,7 +83,7 @@ module CustomBinding
 
     # @return [String] all definitions in @binding
     def to_s
-      contents = binding_contents.map do |key, value|
+      contents = binding_contents.sort.map do |key, value|
         "#{key}: #{value.map(&:to_s).join(', ')}"
       end.join("\n  ")
       "#<CustomBinding #{object_id}\n  #{contents}\n>"

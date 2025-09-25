@@ -4,7 +4,7 @@
 #  - CustomBinding#eval
 module CustomBinding
   class CustomBinding
-   # Copy specified local variables from a source binding to a new binding.
+    # Copy specified local variables from a source binding to a new binding.
     # @param symbols [Array<Symbol>] the local variable names to transfer
     # @param source_binding [Binding] the binding to look up the variables in
     # @return [Binding] a new binding with the specified local variables set
